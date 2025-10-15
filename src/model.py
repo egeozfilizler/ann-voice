@@ -125,7 +125,7 @@ def save_model(model, filepath='my_model.keras'):
 def ann_keras():
     """Main function to orchestrate the entire ML pipeline."""
     # Load data
-    df = load_data('assets/data.csv')
+    df = load_data('data/train.csv')
     
     # Prepare features and labels
     X, Y, label_encoder = prepare_features_and_labels(df)
@@ -148,7 +148,7 @@ def ann_keras():
     evaluate_model(model, X_train_scaled, y_train, X_test_scaled, y_test)
     
     # Save the model
-    save_model(model, 'my_model.keras')
+    save_model(model, 'model/my_model.keras')
     
     # Plot training history
     plot_training_history(history)

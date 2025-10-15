@@ -1,10 +1,10 @@
-# Using my_model.keras for the specified index from assets/data.csv
+# Using my_model.keras for the specified index from data/train.csv
 import pandas as pd
 from tensorflow import keras
 from sklearn.preprocessing import StandardScaler
 
-model = keras.models.load_model('my_model.keras')
-data = pd.read_csv('assets/data.csv')
+model = keras.models.load_model('model/my_model.keras')
+data = pd.read_csv('data/train.csv')
 
 index = 0  # Specify the index of the row you want to test (index + 2 is the line number in the CSV)
 row = data.iloc[index, 0:20].values.astype(float).reshape(1, -1)  # First 20 columns as features
