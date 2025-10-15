@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.model_selection import train_test_split
 from keras.models import Sequential
 from keras.layers import Dense
@@ -44,6 +44,22 @@ def split_train_test(X, Y, test_size=0.20, random_state=42):
     print(f'Shape of Test Data : {X_test.shape}')
     
     return X_train, X_test, y_train, y_test
+
+
+def normalize_features(X_train, X_test):
+    """
+    Normalize features using StandardScaler.
+    Fit on training data and transform both train and test data.
+    """
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
+    
+    print("\nFeatures normalized using StandardScaler")
+    print(f"Mean of scaled training data: {np.mean(X_train_scaled, axis=0)[:3]}...")
+    print(f"Std of scaled training data: {np.std(X_train_scaled, axis=0)[:3]}...")
+    
+    return X_train_scaled, X_test_scaled, scaler
 
 
 def define_model(input_dim=20):
@@ -110,16 +126,19 @@ def ann_keras():
     # Split into train and test sets
     X_train, X_test, y_train, y_test = split_train_test(X, Y)
     
+    # Normalize features using StandardScaler
+    X_train_scaled, X_test_scaled, scaler = normalize_features(X_train, X_test)
+    
     # Define the model
     model = define_model(input_dim=20)
     
-    # Train the model
+    # Train the model with scaled data
     print("\nTraining the model...")
-    history = train_model(model, X_train, y_train, X_test, y_test, epochs=80, batch_size=16, verbose=0)
+    history = train_model(model, X_train_scaled, y_train, X_test_scaled, y_test, epochs=80, batch_size=16, verbose=0)
     
-    # Evaluate the model
+    # Evaluate the model with scaled test data
     print("\nEvaluating the model...")
-    evaluate_model(model, X_test, y_test)
+    evaluate_model(model, X_test_scaled, y_test)
     
     # Save the model
     save_model(model, 'my_model.keras')
@@ -127,7 +146,7 @@ def ann_keras():
     # Plot training history
     plot_training_history(history)
     
-    return model, X_test, y_test, label_encoder
+    return model, X_test_scaled, y_test, label_encoder, scaler
 
 
 def main():
