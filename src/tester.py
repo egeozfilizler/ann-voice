@@ -19,8 +19,6 @@ predicted_prob = model.predict(row_scaled)[0][0]
 predicted_label = 'male' if predicted_prob >= 0.5 else 'female'
 
 # Print row
-print(f"Example: {row}, {true_label}")
-
 print(f"Predicted Probability: {predicted_prob:.4f}")
 print(f"Predicted Label: {predicted_label}")
 print(f"True Label: {true_label}")
