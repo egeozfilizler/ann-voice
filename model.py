@@ -77,7 +77,7 @@ def define_model(input_dim=20):
     return model
 
 
-def train_model(model, X_train, y_train, X_test, y_test, epochs=120, batch_size=8, verbose=0):
+def train_model(model, X_train, y_train, X_test, y_test, epochs=65, batch_size=8, verbose=0):
     """Train the model with training data and validate with test data."""
     history = model.fit(
         X_train, y_train,
@@ -90,12 +90,19 @@ def train_model(model, X_train, y_train, X_test, y_test, epochs=120, batch_size=
     return history
 
 
-def evaluate_model(model, X_test, y_test):
-    """Evaluate the model on test data and print accuracy."""
-    scores = model.evaluate(X_test, y_test)
-    print(model.metrics_names)
-    print(f'Test Accuracy : {model.metrics_names[1]} : {round(scores[1]*100, 2)}%')
-    return scores
+def evaluate_model(model, X_train, y_train, X_test, y_test):
+    """Evaluate the model on both training and test data and print accuracies."""
+    # Evaluate on training data
+    train_scores = model.evaluate(X_train, y_train, verbose=0)
+    print(f'Training Accuracy: {round(train_scores[1]*100, 2)}%')
+    print(f'Training Loss: {round(train_scores[0], 4)}')
+    
+    # Evaluate on test data
+    test_scores = model.evaluate(X_test, y_test, verbose=0)
+    print(f'\nTest Accuracy: {round(test_scores[1]*100, 2)}%')
+    print(f'Test Loss: {round(test_scores[0], 4)}')
+    
+    return train_scores, test_scores
 
 
 def plot_training_history(history):
@@ -134,11 +141,11 @@ def ann_keras():
     
     # Train the model with scaled data
     print("\nTraining the model...")
-    history = train_model(model, X_train_scaled, y_train, X_test_scaled, y_test, epochs=80, batch_size=16, verbose=0)
+    history = train_model(model, X_train_scaled, y_train, X_test_scaled, y_test, epochs=70, batch_size=16, verbose=0)
     
-    # Evaluate the model with scaled test data
+    # Evaluate the model on both training and test data
     print("\nEvaluating the model...")
-    evaluate_model(model, X_test_scaled, y_test)
+    evaluate_model(model, X_train_scaled, y_train, X_test_scaled, y_test)
     
     # Save the model
     save_model(model, 'my_model.keras')
