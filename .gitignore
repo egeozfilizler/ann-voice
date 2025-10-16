@@ -1,1 +1,4 @@
 data/test/
+
+# Ignore all .Ds_Store files
+.DS_Store
